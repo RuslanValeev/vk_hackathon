@@ -2,3 +2,4 @@
 .idea/
 vkapp/vkapp/__pycache__/
 vkapp/vkapp/events/__pycache__/
+vkapp/vkapp/people/__pycache__/
