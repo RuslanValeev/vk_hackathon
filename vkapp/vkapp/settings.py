@@ -25,7 +25,10 @@ SECRET_KEY = '!(32tuvh$%3mv-&rr0!@9fa5mg#3@j3vgy#^vh%fjd8h5-8@0g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '31.186.100.179',
+    'localhost',
+]
 
 XMLFILES_FOLDER = os.path.join(BASE_DIR, 'vkapp/asserts/')
 
@@ -75,13 +78,23 @@ WSGI_APPLICATION = 'vkapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'django_db',
+        'USER': 'base64',
+        'PASSWORD': 'base64pass',
+        'HOST': '31.186.100.179',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
