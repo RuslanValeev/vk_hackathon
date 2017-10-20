@@ -1,16 +1,27 @@
 from django.shortcuts import render
 from django.shortcuts import HttpResponse
-import vk
+import vk, json
 
 def people_index(request):
-    return(HttpResponse("You are at people index"))
+    return(HttpResponse("<html>You are at people index</html>"))
 
 def get_user_info(request):
-    session = vk.Session()
-    vk_api=vk.API(session)
-    user_id_get = request.GET.get('usr', '')
     request_params = request.GET
-    viewer_id = request_params.get('viewer_id')
-    group_id = request_params.get('group_id')
-    user1 = vk_api.users.get(user_id=user_id_get, fields='last_seen')
-    return(HttpResponse(user1))
+
+    session = vk.Session()
+    vk_api = vk.API(session)
+
+    response = {}
+    response['group_id'] = request_params.get('group_id')
+    response['api_settings'] = request_params.get('api_settings')
+
+    user = {}
+    user['id'] = int(request_params.get('viewer_id'))
+    user['is_app_user'] = request_params.get('is_app_user')
+    user_info = vk_api.users.get(user_id=user['id'], fields='last_seen, first_name, last_name, country, city, photo_200')
+    user[''] = user_info[0]['city']
+    response['user'] = user
+
+    res_json = json.dumps(response)
+
+    return(HttpResponse(res_json))
