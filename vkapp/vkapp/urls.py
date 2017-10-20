@@ -19,4 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^events/', include('vkapp.events.urls')),
+    url(r'^people/', include('vkapp.people.urls')),
 ]
