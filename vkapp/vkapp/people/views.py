@@ -1,6 +1,6 @@
 from django.shortcuts import HttpResponse
 from django.http import JsonResponse
-import vk, json
+import vk
 from vkapp.settings import VK_ACCESS_TOKEN
 
 def people_index(request):
@@ -26,6 +26,5 @@ def get_user_info(request):
     user['avatar_url'] = user_info[0]['photo_200']
     response['user'] = user
     # print(vk_api.account.getProfileInfo())
-    res_json = json.dumps(response)
 
     return(JsonResponse(response))
