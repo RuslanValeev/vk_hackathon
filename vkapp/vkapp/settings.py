@@ -30,6 +30,8 @@ ALLOWED_HOSTS = [
     'localhost',
 ]
 
+XMLFILES_FOLDER = os.path.join(BASE_DIR, 'vkapp/asserts/')
+
 
 # Application definition
 
