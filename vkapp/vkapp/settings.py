@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+XMLFILES_FOLDER = os.path.join(BASE_DIR, 'vkapp/asserts/')
+
 
 # Application definition
 
