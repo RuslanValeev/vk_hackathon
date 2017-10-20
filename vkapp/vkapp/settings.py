@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
 
 XMLFILES_FOLDER = os.path.join(BASE_DIR, 'vkapp/asserts/')
 
+VK_ACCESS_TOKEN = '679fec057d0518482df8b1e00badb928f637cb88fd5fc844f8a9e28a27228fd423ebbe2f7090e28a64691'
 
 # Application definition
 
