@@ -102,6 +102,7 @@ function renderEvent(data) {
     processedData['date'] = dateTime.toLocaleString("ru", dateOptions);
     processedData['description'] = (data['description'] || data['editorial_comment'] || data['synopsis'] || '').slice(0, 80);
     processedData['label'] = data['label'] ? labelTemplate({icon: data['label']}) : '';
+    processedData['event_id'] = data['creation_id'];
     return eventTemplate(processedData);
 }
 
@@ -176,6 +177,15 @@ $(document).ready(function () {
                 eventList.append(renderEvent(event));
             });
             $('.subscribe_to_event').click(function () {
+                $.ajax({
+                    url: '/matching/post/subscribe',
+                    method: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: CSRF_TOKEN,
+                        event_id: $(this).data('event-id')
+                    }
+                });
+
                 var users = getUsers();
 
 
