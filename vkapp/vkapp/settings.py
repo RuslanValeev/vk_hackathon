@@ -34,6 +34,8 @@ XMLFILES_FOLDER = os.path.join(BASE_DIR, 'vkapp/asserts/')
 
 VK_ACCESS_TOKEN = '679fec057d0518482df8b1e00badb928f637cb88fd5fc844f8a9e28a27228fd423ebbe2f7090e28a64691'
 
+VK_APP_CLIENT_ID = '6227760'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'vkapp.people',
+    'vkapp.events',
 ]
 
 MIDDLEWARE = [
@@ -60,7 +64,7 @@ ROOT_URLCONF = 'vkapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [(os.path.join(BASE_DIR, 'vkapp/templates/')), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,3 +138,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+    # '/var/www/static/',
+]

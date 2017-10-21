@@ -1,10 +1,15 @@
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, redirect, render
 from django.http import JsonResponse
 import vk
-from vkapp.settings import VK_ACCESS_TOKEN
+from vkapp.settings import VK_ACCESS_TOKEN, VK_APP_CLIENT_ID
 
 def people_index(request):
-    return(HttpResponse("<html>You are at people index</html>"))
+    return(render(request, template_name='index.html', using=None))
+
+
+def oauth(request):
+    oauth_url = 'https://oauth.vk.com/authorize?client_id=' + VK_APP_CLIENT_ID + '&display=page&redirect_uri=localhost:8000/people&response_type=token&v=5.68'
+    return(redirect(oauth_url))
 
 def get_user_info(request):
     request_params = request.GET
