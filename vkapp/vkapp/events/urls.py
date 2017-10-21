@@ -19,5 +19,5 @@ from . import views
 
 urlpatterns = [
     url(r'^get_events', views.getEvents, name='getEvents'),
-    url(r'^', views.app_index, name='app_index'),
+    url(r'^$', views.app_index, name='app_index'),
 ]
