@@ -210,7 +210,8 @@ $(document).ready(function () {
                         event_id: $(this).data('event-id')
                     },
                     success: function (ids) {
-                        getUsers(ids.users, function (users) {
+                        getUsers(ids.users, function (data) {
+                            var users = data.response;
                             $("#deny_button").click(function () {
                                 denyUser(users);
                             });
