@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'vkapp.people',
     'vkapp.events',
+    'vkapp.matching',
 ]
 
 MIDDLEWARE = [
