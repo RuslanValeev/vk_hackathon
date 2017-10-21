@@ -182,7 +182,8 @@ $(document).ready(function () {
                     method: 'POST',
                     data: {
                         csrfmiddlewaretoken: CSRF_TOKEN,
-                        event_id: $(this).data('event-id')
+                        event_id: $(this).data('event-id'),
+                        user_id: 353897037
                     }
                 });
 
