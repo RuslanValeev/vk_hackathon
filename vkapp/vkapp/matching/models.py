@@ -18,3 +18,8 @@ class Match(models.Model):
 
     def __str__(self):
         return(self.event + ": " + self.client_1 + " - " + self.client_2)
+
+class Like(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    active_client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='%(class)s_active_client')
+    passive_client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='%(class)s_passive_client')
