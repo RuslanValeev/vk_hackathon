@@ -98,7 +98,7 @@ $(document).ready(function () {
         var tab_name = $(this).attr('data-toggle-href');
         switchTab(tab_name)
     });
-    switchTab('event_list');
+    switchTab('match_list');
 
     var eventList = $('#event_list');
 
