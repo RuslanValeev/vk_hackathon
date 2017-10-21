@@ -11,6 +11,11 @@ class EventUser(models.Model):
     def __str__(self):
         return(self.event + " – " + self.client)
 
+    @classmethod
+    def create(cls, user, event):
+        event_user = cls(client=user, event=event)
+        return event_user
+
 class Match(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     client_1 = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='%(class)s_first_client')
