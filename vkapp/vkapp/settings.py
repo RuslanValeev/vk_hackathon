@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'rvaleev.ru',
+    '172.20.10.7'
 ]
 
 XMLFILES_FOLDER = os.path.join(BASE_DIR, 'vkapp/asserts/')
