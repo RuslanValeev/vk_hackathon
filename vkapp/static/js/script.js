@@ -198,7 +198,7 @@ $(document).ready(function () {
                     data: {
                         csrfmiddlewaretoken: CSRF_TOKEN,
                         event_id: $(this).data('event-id'),
-                        user_id: 353897037
+                        user_id: window.location.search.match(/viewer_id=(\d+)/)[1]
                     }
                 });
 
