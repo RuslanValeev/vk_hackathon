@@ -10,7 +10,7 @@ def post_subscribe_user_to_event(request):
     client = Client.objects.get(vk_id_ref=user_id)
     event = Event.objects.get(afisha_event_ref=event_id)
     if client and event:
-        event = EventUser.objects.create(client=client, event=event)
+        event = EventUser.objects.get_or_create(client=client, event=event)
 
     return HttpResponse(200)
 
