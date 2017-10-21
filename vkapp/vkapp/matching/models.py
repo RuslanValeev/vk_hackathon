@@ -9,7 +9,7 @@ class EventUser(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return(self.event + " – " + self.client)
+        return(self.event.__str__() + " – " + self.client.__str__())
 
     @classmethod
     def create(cls, user, event):
