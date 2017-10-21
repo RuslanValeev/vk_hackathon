@@ -86,3 +86,6 @@ def getEvents(request):
             if counter > LIMIT:
                 break
     return JsonResponse(events, safe=False)
+
+def app_index(request):
+    return(render(request, template_name='index.html', using=None))
