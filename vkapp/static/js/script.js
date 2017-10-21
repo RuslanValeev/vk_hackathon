@@ -51,27 +51,30 @@ var users_info = [
 ];
 
 _.templateSettings = {
-    interpolate : /\{\{=([\s\S]+?)\}\}/g,
+    interpolate: /\{\{=([\s\S]+?)\}\}/g,
 };
 
 function renderEvent(data) {
     var timeOptions = {
-  hour: '2-digit',
-  minute: 'numeric'
-};
+        hour: '2-digit',
+        minute: 'numeric'
+    };
     var dateOptions = {
-  year: '2-digit',
-  month: 'numeric',
-  day: 'numeric',
-  weekday: 'short'
+        year: '2-digit',
+        month: 'numeric',
+        day: 'numeric',
+        weekday: 'short'
     };
 
     var eventTemplate = _.template($('#event_template').html());
     var labelTemplate = _.template($('#event_label').html());
 
-    processedData = _.clone(data);
-    processedData['time'] = (new Date(data['start_date'])).toLocaleString("ru", timeOptions);
-    processedData['date'] = (new Date(data['start_date'])).toLocaleString("ru", dateOptions);
+    processedData = _.pick(data, ['image_url', 'name']);
+    var dateTime = new Date(data['begin'] || data['end']);
+
+    processedData['time'] = dateTime.toLocaleString("ru", timeOptions);
+    processedData['date'] = dateTime.toLocaleString("ru", dateOptions);
+    processedData['description'] = (data['description'] || data['editorial_comment'] || data['synopsis'] || '').slice(0, 80);
     processedData['label'] = data['label'] ? labelTemplate({icon: data['label']}) : '';
     return eventTemplate(processedData);
 }
@@ -95,11 +98,21 @@ $(document).ready(function () {
         var tab_name = $(this).attr('data-toggle-href');
         switchTab(tab_name)
     });
-    switchTab('match_list');
+    switchTab('event_list');
 
     var eventList = $('#event_list');
-    testDataJson.forEach(function (event, index) {
-        eventList.append(renderEvent(event));
+
+    $.ajax({
+        url: 'http://localhost:8000/events?limit=20',
+        success: function (events) {
+            events.forEach(function (event, index) {
+                eventList.append(renderEvent(event));
+            });
+        }
     });
+
+    // testDataJson.forEach(function (event, index) {
+    //     eventList.append(renderEvent(event));
+    // });
 
 });
