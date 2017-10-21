@@ -64,7 +64,6 @@ var testUsers = [
         name: 'Bathsheba Putin'
     }
 ];
-
 var users_info = [
     {
         id: 1,
@@ -131,8 +130,11 @@ function getMatches() {
     return _.clone(testUsers);
 }
 
-function getUsers() {
-    return _.clone(testUsers);
+function getUsers(ids, callback) {
+    VK.api("users.get", {
+        "user_ids": ids.join(','),
+        "fields": "sex,photo_400_orig,bdate,status,screen_name"
+    }, callback);
 }
 
 function showUserCard(name) {
@@ -150,16 +152,29 @@ function showUserCard(name) {
 }
 
 function denyUser(users) {
-    $('#match_wrapper').find('.card').addClass('denying');
+    $('#match_wrapper').find('.card').addClass('denying')
+        .one('transitionend webkitTransitionEnd oTransitionEnd', function () {
+            $(this).remove();
+        });
     showUserCard(users.pop());
 }
 
 function allowUser(users) {
-    $('#match_wrapper').find('.card').addClass('allowing');
+    $('#match_wrapper').find('.card').addClass('allowing')
+        .one('transitionend webkitTransitionEnd oTransitionEnd', function () {
+            $(this).remove();
+        });
     showUserCard(users.pop())
 }
 
 $(document).ready(function () {
+    VK.init(function () {
+        console.log('VK init success');
+    }, function () {
+        console.log('VK Init error');
+    }, '5.68');
+
+
     var tabs = $('#menu a[data-toggle-href]');
     tabs.click(function (event) {
         var tab_name = $(this).attr('data-toggle-href');
@@ -187,37 +202,45 @@ $(document).ready(function () {
                     }
                 });
 
-                var users = getUsers();
-
-
-                $("#deny_button").click(function () {
-                    denyUser(users);
-                });
-
-                $('#allow_button').click(function () {
-                    allowUser(users);
-                });
-
-                $('#modal_user_cards').modal({
-                    onHide: function () {
-                        $(window).off('keydown');
-                        var matches = getMatches();
-                        $('#new_matches_counter').text(matches.length).show();
+                $.ajax({
+                    url: '/matching/get_subscribers',
+                    method: 'GET',
+                    data: {
+                        event_id: $(this).data('event-id')
                     },
-                    onShow: function () {
-                        $(window).on('keydown', function (event) {
-                            switch (event.originalEvent.key) {
-                                case 'ArrowLeft':
-                                    denyUser(users);
-                                    break;
-                                case 'ArrowRight':
-                                    allowUser(users);
-                                    break;
-                            }
-                            event.stopPropagation();
+                    success: function (ids) {
+                        var users = getUsers(ids, function () {
+                            $("#deny_button").click(function () {
+                                denyUser(users);
+                            });
+
+                            $('#allow_button').click(function () {
+                                allowUser(users);
+                            });
+
+                            $('#modal_user_cards').modal({
+                                onHide: function () {
+                                    $(window).off('keydown');
+                                    var matches = getMatches();
+                                    $('#new_matches_counter').text(matches.length).show();
+                                },
+                                onShow: function () {
+                                    $(window).on('keydown', function (event) {
+                                        switch (event.originalEvent.key) {
+                                            case 'ArrowLeft':
+                                                denyUser(users);
+                                                break;
+                                            case 'ArrowRight':
+                                                allowUser(users);
+                                                break;
+                                        }
+                                        event.stopPropagation();
+                                    });
+                                }
+                            }).modal('show');
                         });
                     }
-                }).modal('show');
+                });
             });
         }
     });
@@ -225,11 +248,5 @@ $(document).ready(function () {
     getMatches().forEach(function (user) {
         $('#match_list').find('.ui.grid.centered').append(renderMatch(user));
     });
-
-
-    // $("#tinderslide").jTinder();
-    // testDataJson.forEach(function (event, index) {
-    //     eventList.append(renderEvent(event));
-    // });
 
 });
