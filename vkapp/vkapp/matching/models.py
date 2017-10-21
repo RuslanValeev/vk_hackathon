@@ -2,19 +2,12 @@ from django.db import models
 from vkapp.events.models import Event
 from vkapp.people.models import Client
 
-
-# Create your models here.
 class EventUser(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return(self.event.__str__() + " – " + self.client.__str__())
-
-    @classmethod
-    def create(cls, user, event):
-        event_user = cls(client=user, event=event)
-        return event_user
 
 class Match(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)

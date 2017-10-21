@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from django.http import JsonResponse
 from vkapp.settings import XMLFILES_FOLDER
 import json
+import re
 
 class Creation:
     creationId = ""
@@ -44,11 +45,23 @@ class Event:
     def __hash__(self):
         return hash(('creationId', self.creation.creationId))
 
+def getTypeOfEvent(event_id):
+    types = {
+        'movie': re.compile('^movie', re.IGNORECASE),
+        'performance': re.compile('^performance', re.IGNORECASE),
+        'exhibition': re.compile('^exhibition', re.IGNORECASE),
+        'concert': re.compile('^concert', re.IGNORECASE)
+    }
+    for type, regex in types.items():
+        if regex.search(event_id):
+            return type
+
 def getEvents(request):
     schedules = {}
     creations = {}
     events = []
     LIMIT = int(request.GET.get('limit'))
+    TYPE = request.GET.get('type')
 
     schedulePath = XMLFILES_FOLDER + 'schedules_spb.xml'
     schedulesXML = ET.parse(schedulePath).getroot()
@@ -61,6 +74,10 @@ def getEvents(request):
             del creation
             continue
         creation.creationId = creationElement.find("creation-id").text
+
+        if TYPE and getTypeOfEvent(creation.creationId) != TYPE:
+            del creation
+            continue
         creation.name = creationElement.find("name").text
         creation.url = creationElement.find("url").text
         creation.description = creationElement.find("description").text

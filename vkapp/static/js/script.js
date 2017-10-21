@@ -171,7 +171,7 @@ $(document).ready(function () {
     var eventList = $('#event_list');
 
     $.ajax({
-        url: '/get_events?limit=20',
+        url: '/get_events?limit=20&type=concert',
         success: function (events) {
             events.forEach(function (event, index) {
                 eventList.append(renderEvent(event));
@@ -182,7 +182,8 @@ $(document).ready(function () {
                     method: 'POST',
                     data: {
                         csrfmiddlewaretoken: CSRF_TOKEN,
-                        event_id: $(this).data('event-id')
+                        event_id: $(this).data('event-id'),
+                        user_id: 353897037
                     }
                 });
 
