@@ -14,6 +14,7 @@ class Creation:
     description = ""
     editorialComment = ""
     synopsis = ""
+    image_url = ""
 
 class Schedule:
     creationId = ""
@@ -34,6 +35,7 @@ class Event:
         dict["description"] = self.creation.description
         dict["editorial_comment"] = self.creation.editorialComment
         dict["synopsis"] = self.creation.synopsis
+        dict["image_url"] = self.creation.image_url
         return dict
 
     def __eq__(self, other):
@@ -46,6 +48,7 @@ def getEvents(request):
     schedules = {}
     creations = {}
     events = []
+    LIMIT = int(request.GET.get('limit'))
 
     schedulePath = XMLFILES_FOLDER + 'schedules_spb.xml'
     schedulesXML = ET.parse(schedulePath).getroot()
@@ -54,28 +57,35 @@ def getEvents(request):
 
     for creationElement in creationsXML:
         creation = Creation()
+        if not creationElement.find('main-photo').text:
+            del creation
+            continue
         creation.creationId = creationElement.find("creation-id").text
         creation.name = creationElement.find("name").text
         creation.url = creationElement.find("url").text
         creation.description = creationElement.find("description").text
         creation.editorialComment = creationElement.find("editorial-comment").text
         creation.synopsis = creationElement.find("synopsis").text
+        creation.image_url = creationElement.find('main-photo').text
 
         creations[creation.creationId] = creation
 
+    counter = 0
     for scheduleElement in schedulesXML:
-        schedule = Schedule()
-        schedule.creationId = scheduleElement.find("creation-id").text
-        schedule.begin = scheduleElement.find("begin").text
-        schedule.end = scheduleElement.find("end").text
-        schedules[schedule.creationId] = schedule
-
-    # schedules = set(schedules)
-
-    for key, value in schedules.items():
-        event = Event()
-        event.schedule = value
-        event.creation = creations[key]
-        events.append(event.createEventDict())
-
+        if scheduleElement.find("creation-id").text in creations:
+            schedule = Schedule()
+            schedule.creationId = scheduleElement.find("creation-id").text
+            schedule.begin = scheduleElement.find("begin").text
+            schedule.end = scheduleElement.find("end").text
+            # schedules[schedule.creationId] = schedule
+            counter += 1
+            event = Event()
+            event.schedule = schedule
+            event.creation = creations[schedule.creationId]
+            events.append(event.createEventDict())
+            if counter > LIMIT:
+                break
     return JsonResponse(events, safe=False)
+
+def app_index(request):
+    return(render(request, template_name='index.html', using=None))

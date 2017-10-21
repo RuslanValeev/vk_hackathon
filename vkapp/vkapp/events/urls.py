@@ -18,5 +18,6 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.getEvents, name='getEvents'),
+    url(r'^get_events', views.getEvents, name='getEvents'),
+    url(r'^', views.app_index, name='app_index'),
 ]
