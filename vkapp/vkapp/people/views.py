@@ -1,14 +1,20 @@
-from django.shortcuts import render
-from django.shortcuts import HttpResponse
-import vk, json
+from django.shortcuts import HttpResponse, redirect, render
+from django.http import JsonResponse
+import vk
+from vkapp.settings import VK_ACCESS_TOKEN, VK_APP_CLIENT_ID
 
 def people_index(request):
-    return(HttpResponse("<html>You are at people index</html>"))
+    return(render(request, template_name='index.html', using=None))
+
+
+def oauth(request):
+    oauth_url = 'https://oauth.vk.com/authorize?client_id=' + VK_APP_CLIENT_ID + '&display=page&redirect_uri=localhost:8000/people&response_type=token&v=5.68'
+    return(redirect(oauth_url))
 
 def get_user_info(request):
     request_params = request.GET
 
-    session = vk.Session()
+    session = vk.Session(access_token=VK_ACCESS_TOKEN)
     vk_api = vk.API(session)
 
     response = {}
@@ -19,9 +25,11 @@ def get_user_info(request):
     user['id'] = int(request_params.get('viewer_id'))
     user['is_app_user'] = request_params.get('is_app_user')
     user_info = vk_api.users.get(user_id=user['id'], fields='last_seen, first_name, last_name, country, city, photo_200')
-    user[''] = user_info[0]['city']
+    # account_info = vk_api.
+    user['city'] = user_info[0]['city']
+    user['name'] = user_info[0]['first_name'] + " " + user_info[0]['last_name']
+    user['avatar_url'] = user_info[0]['photo_200']
     response['user'] = user
+    # print(vk_api.account.getProfileInfo())
 
-    res_json = json.dumps(response)
-
-    return(HttpResponse(res_json))
+    return(JsonResponse(response))
