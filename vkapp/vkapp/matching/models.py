@@ -5,6 +5,10 @@ from vkapp.people.models import Client
 class EventUser(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
+    class Meta:
+        unique_together = [
+            ('event', 'client')
+        ]
 
     def __str__(self):
         return(self.event.__str__() + " – " + self.client.__str__())
