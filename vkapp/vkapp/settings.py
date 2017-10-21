@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'rvaleev.ru',
+    '172.20.10.7'
 ]
 
 XMLFILES_FOLDER = os.path.join(BASE_DIR, 'vkapp/asserts/')
@@ -141,7 +142,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'vkapp/fullstatic/')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     # '/var/www/static/',

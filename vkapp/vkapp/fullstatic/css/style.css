@@ -1,0 +1,13 @@
+#event_list > .item  {
+    /*border: 1px solid rgba(0,0,0,.3);*/
+}
+
+html {
+    background-color: #eee;
+}
+
+body {
+    height: 864px;
+    width: 807px;
+    /*margin: auto;*/
+}

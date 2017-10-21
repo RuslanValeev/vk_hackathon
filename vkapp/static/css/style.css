@@ -1,4 +1,4 @@
-#event_list > .item  {
+#event_list > .item {
     /*border: 1px solid rgba(0,0,0,.3);*/
 }
 
@@ -10,4 +10,48 @@ body {
     height: 864px;
     width: 807px;
     /*margin: auto;*/
+}
+
+.ui.piled.segments.card {
+    z-index: 1;
+}
+
+#match_wrapper {
+    height: 550px;
+}
+
+#match_wrapper .ui.segments.card {
+    transition: .7s ease-in-out;
+    animation: fadeInFromNone 0.5s ease-out;
+    width: auto;
+    top: 20px;
+    left: 20px;
+    right:20px;
+    position: absolute;
+    /*position: absolute;*/
+    /*top: 0*/
+}
+
+#match_wrapper .ui.segments.card.denying {
+    transform: translateX(-140%) rotate(-10deg) scale(.7);
+    opacity: 0;
+}
+
+#match_wrapper .ui.segments.card.allowing {
+    transform: translateX(140%) rotate(10deg) scale(.7);
+    opacity: 0;
+}
+
+#match_wrapper .ui.segments.card.showing {
+    transform: scale(.7);
+    opacity: 0;
+}
+
+#match_list .ui.grid {
+    overflow: hidden;
+}
+
+#allow_button,
+#deny_button {
+    transform: scale(2);
 }
