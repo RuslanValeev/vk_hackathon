@@ -16,7 +16,7 @@
     <script type="text/javascript" src="https://vk.com/js/api/xd_connection.js?2"></script>
     <script type="text/javascript" src="{% static "js/vk_logic.js" %}"></script>
     <script type="text/javascript">
-        console.log($("{% csrf_token %}").attr('value'));
+        var CSRF_TOKEN = $("{% csrf_token %}").attr('value');
     </script>
 </head>
 <body>
@@ -48,7 +48,7 @@
             <div class="four wide column">
                 <p><i class="icon calendar"></i>{{= date }}</p>
                 <p><i class="icon hourglass empty "></i>{{= time }}</p>
-                <button class="ui primary button icon labeled subscribe_to_event">
+                <button class="ui primary button icon labeled subscribe_to_event" data-event-id="{{= event_id }}">
                     <i class="heart icon"></i>
                     Я пойду!
                 </button>
