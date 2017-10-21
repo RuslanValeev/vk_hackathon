@@ -118,7 +118,9 @@ function switchTab(name) {
 
 function renderUser(data) {
     var matchTemplate = _.template($('#user_card_template').html());
-    return $(matchTemplate(data));
+    processedData['name'] = data['first_name'];
+    processedData['avatar_url'] = data['photo_400_orig'];
+    return $(matchTemplate(processedData));
 }
 
 function renderMatch(data) {
@@ -181,7 +183,6 @@ $(document).ready(function () {
         switchTab(tab_name)
     });
     switchTab('match_list');
-    showUserCard(testUsers.pop());
 
     var eventList = $('#event_list');
 
@@ -193,7 +194,7 @@ $(document).ready(function () {
             });
             $('.subscribe_to_event').click(function () {
                 $.ajax({
-                    url: '/matching/post/subscribe',
+                    url: '/matching/subscribe',
                     method: 'POST',
                     data: {
                         csrfmiddlewaretoken: CSRF_TOKEN,
@@ -209,7 +210,7 @@ $(document).ready(function () {
                         event_id: $(this).data('event-id')
                     },
                     success: function (ids) {
-                        var users = getUsers(ids, function () {
+                        getUsers(ids.users, function (users) {
                             $("#deny_button").click(function () {
                                 denyUser(users);
                             });
@@ -217,6 +218,8 @@ $(document).ready(function () {
                             $('#allow_button').click(function () {
                                 allowUser(users);
                             });
+
+                            showUserCard(users.pop());
 
                             $('#modal_user_cards').modal({
                                 onHide: function () {
