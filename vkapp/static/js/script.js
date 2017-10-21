@@ -103,7 +103,7 @@ $(document).ready(function () {
     var eventList = $('#event_list');
 
     $.ajax({
-        url: 'http://localhost:8000/events?limit=20',
+        url: 'http://localhost:8000/get_events?limit=20',
         success: function (events) {
             events.forEach(function (event, index) {
                 eventList.append(renderEvent(event));
