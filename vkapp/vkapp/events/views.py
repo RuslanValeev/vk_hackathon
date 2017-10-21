@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from .models import Event as ModelEvent
 # Create your views here.
 
 import xml.etree.ElementTree as ET
@@ -100,6 +100,17 @@ def getEvents(request):
             event.schedule = schedule
             event.creation = creations[schedule.creationId]
             events.append(event.createEventDict())
+            description_ = (event.creation.description) or (event.creation.synopsis) or (
+                event.creation.editorialComment) or ('')
+            description_= description_[:100]
+            model_event = ModelEvent.objects.get_or_create(
+                afisha_event_ref=event.creation.creationId,
+                title=event.creation.name[:32],
+                description=description_,
+                city_id=2,
+                start_date=event.schedule.begin,
+                end_date=event.schedule.end
+            )
             if counter > LIMIT:
                 break
     return JsonResponse(events, safe=False)
