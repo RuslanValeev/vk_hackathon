@@ -175,6 +175,7 @@ $(document).ready(function () {
     }, function () {
         console.log('VK Init error');
     }, '5.68');
+    window.user_id = window.location.search.match(/viewer_id=(\d+)/)[1];
 
 
     var tabs = $('#menu a[data-toggle-href]');
@@ -199,7 +200,7 @@ $(document).ready(function () {
                     data: {
                         csrfmiddlewaretoken: CSRF_TOKEN,
                         event_id: $(this).data('event-id'),
-                        user_id: window.location.search.match(/viewer_id=(\d+)/)[1]
+                        user_id: window.user_id
                     }
                 });
 
@@ -211,7 +212,9 @@ $(document).ready(function () {
                     },
                     success: function (ids) {
                         getUsers(ids.users, function (data) {
-                            var users = data.response;
+                            var users = _.reject(data.response, function(user){
+                                return user.id === window.user_id
+                            });
                             $("#deny_button").click(function () {
                                 denyUser(users);
                             });
