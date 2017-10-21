@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from vkapp.vkapp.matching.models import EventUser
+from vkapp.matching.models import EventUser
 
 def post_subscribe_user_to_event(request):
     user_id = request.POST.get("user_id")
