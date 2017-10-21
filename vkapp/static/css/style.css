@@ -4,11 +4,12 @@
 
 html {
     background-color: #eee;
+    overflow: auto;
+    height: 864px !important;
+    width: 807px !important;
 }
 
 body {
-    height: 864px;
-    width: 807px;
     /*margin: auto;*/
 }
 
@@ -51,7 +52,19 @@ body {
     overflow: hidden;
 }
 
+#match_list .card{
+    width: 100%;
+}
+
+#user_cards {
+    overflow: hidden;
+}
+
 #allow_button,
 #deny_button {
     transform: scale(2);
+}
+
+#new_matches_counter {
+    display: none;
 }

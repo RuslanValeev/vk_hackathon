@@ -102,11 +102,11 @@ function renderEvent(data) {
     processedData['date'] = dateTime.toLocaleString("ru", dateOptions);
     processedData['description'] = (data['description'] || data['editorial_comment'] || data['synopsis'] || '').slice(0, 80);
     processedData['label'] = data['label'] ? labelTemplate({icon: data['label']}) : '';
+    processedData['event_id'] = data['creation_id'];
     return eventTemplate(processedData);
 }
 
 function switchTab(name) {
-
     var tabs = $('#menu a[data-toggle-href]');
     var thisTab = $('[data-toggle-href=' + name + ']');
     tabs.not(thisTab).removeClass('active');
@@ -117,19 +117,46 @@ function switchTab(name) {
     tab.show();
 }
 
-function renderMatch(data) {
-    var matchTemplate = _.template($('#match_template').html());
+function renderUser(data) {
+    var matchTemplate = _.template($('#user_card_template').html());
     return $(matchTemplate(data));
 }
 
-function showMatch(name) {
-    if (!name)
-        return
-    var newMatch = renderMatch(name);
+function renderMatch(data) {
+    var matchTemplate = _.template($('#match_card_template').html());
+    return $(matchTemplate(data));
+}
+
+function getMatches() {
+    return _.clone(testUsers);
+}
+
+function getUsers() {
+    return _.clone(testUsers);
+}
+
+function showUserCard(name) {
+    if (!name) {
+        _.delay(function () {
+            $('#modal_user_cards').modal('hide');
+        }, 400);
+        return;
+    }
+    var newMatch = renderUser(name);
     newMatch.addClass('showing').prependTo($('#match_wrapper'));
     _.delay(function () {
         newMatch.removeClass('showing');
     }, 15)
+}
+
+function denyUser(users) {
+    $('#match_wrapper').find('.card').addClass('denying');
+    showUserCard(users.pop());
+}
+
+function allowUser(users) {
+    $('#match_wrapper').find('.card').addClass('allowing');
+    showUserCard(users.pop())
 }
 
 $(document).ready(function () {
@@ -139,28 +166,66 @@ $(document).ready(function () {
         switchTab(tab_name)
     });
     switchTab('match_list');
-    showMatch(testUsers.pop());
+    showUserCard(testUsers.pop());
 
     var eventList = $('#event_list');
 
     $.ajax({
-        url: '/get_events?limit=20',
+        url: '/get_events?limit=20&type=concert',
         success: function (events) {
             events.forEach(function (event, index) {
                 eventList.append(renderEvent(event));
             });
-        }
-    });
-    $("#deny_button").click(function () {
-            $('#match_wrapper').find('.card').addClass('denying');
-            showMatch(testUsers.pop());
-        }
-    );
+            $('.subscribe_to_event').click(function () {
+                $.ajax({
+                    url: '/matching/post/subscribe',
+                    method: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: CSRF_TOKEN,
+                        event_id: $(this).data('event-id'),
+                        user_id: 353897037
+                    }
+                });
 
-    $('#allow_button').click(function () {
-            $('#match_wrapper').find('.card').addClass('allowing');
-            showMatch(testUsers.pop());
+                var users = getUsers();
+
+
+                $("#deny_button").click(function () {
+                    denyUser(users);
+                });
+
+                $('#allow_button').click(function () {
+                    allowUser(users);
+                });
+
+                $('#modal_user_cards').modal({
+                    onHide: function () {
+                        $(window).off('keydown');
+                        var matches = getMatches();
+                        $('#new_matches_counter').text(matches.length).show();
+                    },
+                    onShow: function () {
+                        $(window).on('keydown', function (event) {
+                            switch (event.originalEvent.key) {
+                                case 'ArrowLeft':
+                                    denyUser(users);
+                                    break;
+                                case 'ArrowRight':
+                                    allowUser(users);
+                                    break;
+                            }
+                            event.stopPropagation();
+                        });
+                    }
+                }).modal('show');
+            });
+        }
     });
+
+    getMatches().forEach(function (user) {
+        $('#match_list').find('.ui.grid.centered').append(renderMatch(user));
+    });
+
 
     // $("#tinderslide").jTinder();
     // testDataJson.forEach(function (event, index) {
