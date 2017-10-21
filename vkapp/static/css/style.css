@@ -3,14 +3,10 @@
 }
 
 html {
-    background-color: #eee;
     overflow: auto;
-    height: 864px !important;
-    width: 807px !important;
 }
 
 body {
-    /*margin: auto;*/
 }
 
 .ui.piled.segments.card {
@@ -29,8 +25,6 @@ body {
     left: 20px;
     right:20px;
     position: absolute;
-    /*position: absolute;*/
-    /*top: 0*/
 }
 
 #match_wrapper .ui.segments.card.denying {
