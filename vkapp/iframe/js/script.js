@@ -76,8 +76,27 @@ function renderEvent(data) {
     return eventTemplate(processedData);
 }
 
+function switchTab(name) {
+
+    var tabs = $('#menu a[data-toggle-href]');
+    var thisTab = $('[data-toggle-href=' + name + ']');
+    tabs.not(thisTab).removeClass('active');
+    thisTab.addClass('active');
+
+    var tab = $('#' + name);
+    $('.toggled-tab').not(tab).hide();
+    tab.show();
+}
+
 
 $(document).ready(function () {
+    var tabs = $('#menu a[data-toggle-href]');
+    tabs.click(function (event) {
+        var tab_name = $(this).attr('data-toggle-href');
+        switchTab(tab_name)
+    });
+    switchTab('match_list');
+
     var eventList = $('#event_list');
     testDataJson.forEach(function (event, index) {
         eventList.append(renderEvent(event));
