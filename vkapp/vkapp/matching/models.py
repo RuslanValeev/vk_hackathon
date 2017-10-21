@@ -9,7 +9,12 @@ class EventUser(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return(self.event + " – " + self.client)
+        return(self.event.__str__() + " – " + self.client.__str__())
+
+    @classmethod
+    def create(cls, user, event):
+        event_user = cls(client=user, event=event)
+        return event_user
 
 class Match(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -18,3 +23,8 @@ class Match(models.Model):
 
     def __str__(self):
         return(self.event + ": " + self.client_1 + " - " + self.client_2)
+
+class Like(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    active_client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='%(class)s_active_client')
+    passive_client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='%(class)s_passive_client')
