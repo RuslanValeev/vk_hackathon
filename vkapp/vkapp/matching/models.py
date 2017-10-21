@@ -19,9 +19,12 @@ class Match(models.Model):
     client_2 = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='%(class)s_second_client')
 
     def __str__(self):
-        return(self.event + ": " + self.client_1 + " - " + self.client_2)
+        return(self.event.__str__() + ": " + self.client_1.__str__() + " - " + self.client_2.__str__())
 
 class Like(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     active_client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='%(class)s_active_client')
     passive_client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='%(class)s_passive_client')
+
+    def __str__(self):
+        return(self.event.__str__() + ' where ' + self.active_client.__str__() + ' liked ' + self.passive_client.__str__())
