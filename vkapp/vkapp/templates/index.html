@@ -15,6 +15,9 @@
     <script type="text/javascript" src="{% static "js/script.js" %}"></script>
     <script type="text/javascript" src="https://vk.com/js/api/xd_connection.js?2"></script>
     <script type="text/javascript" src="{% static "js/vk_logic.js" %}"></script>
+    <script type="text/javascript">
+        console.log($("{% csrf_token %}").attr('value'));
+    </script>
 </head>
 <body>
 {% verbatim %}
@@ -45,7 +48,7 @@
             <div class="four wide column">
                 <p><i class="icon calendar"></i>{{= date }}</p>
                 <p><i class="icon hourglass empty "></i>{{= time }}</p>
-                <button class="ui primary button icon labeled">
+                <button class="ui primary button icon labeled subscribe_to_event">
                     <i class="heart icon"></i>
                     Я пойду!
                 </button>
@@ -54,8 +57,8 @@
         </div>
     </div>
 </template>
-<template id="match_template">
-    <div class="ui card piled segments" data->
+<template id="user_card_template">
+    <div class="ui card segments">
         <div class="blurring dimmable image">
             <div class="ui dimmer transition hidden">
                 <div class="content">
@@ -83,6 +86,37 @@
         </div>
     </div>
 </template>
+<template id="match_card_template">
+    <div class="six wide column">
+        <div class="ui card segments">
+            <div class="blurring dimmable image">
+                <div class="ui dimmer transition hidden">
+                    <div class="content">
+                        <div class="center">
+                            <div class="ui inverted button">Add Friend</div>
+                        </div>
+                    </div>
+                </div>
+                <img src="{{= avatar_url }}">
+            </div>
+            <div class="content">
+                <div class="header">{{= name }}</div>
+                <div class="meta">
+                    <a class="group">Pundit</a>
+                </div>
+            </div>
+            <div class="extra content">
+                <a class="right floated created">
+                    Joined in 1998
+                </a>
+                <a class="friends">
+                    <i class="user icon"></i>
+                    22 Friends
+                </a>
+            </div>
+        </div>
+    </div>
+</template>
 {% endverbatim %}
 
 <div class="ui pointing menu" id="menu">
@@ -90,7 +124,7 @@
         <i class="icon tasks"></i>Предстоящие события
     </a>
     <a class="item" data-toggle-href="match_list">
-        <div class="floating ui red label">22</div>
+        <div class="floating ui red label" id="new_matches_counter"></div>
         <i class="icon users"></i>Встречи
     </a>
     <a class="item" data-toggle-href="settings">
@@ -111,6 +145,21 @@
     <div class="ui unstackable items divided toggled-tab" id="event_list">
     </div>
     <div class="toggled-tab ui" id="match_list">
+            <div class="ui grid centered">
+        </div>
+    </div>
+    <div class="toggled-tab" id="settings">
+        kek
+    </div>
+</div>
+
+
+<div class="ui modal" id="modal_user_cards">
+    <i class="close icon"></i>
+    <div class="header">
+        Profile Picture
+    </div>
+    <div class="ui" id="user_cards">
         <div class="ui grid">
             <div class="ui four wide column middle aligned content center aligned">
                 <button class="ui circular icon big button red" id="deny_button">
@@ -125,9 +174,6 @@
                 </button>
             </div>
         </div>
-    </div>
-    <div class="toggled-tab" id="settings">
-        kek
     </div>
 </div>
 </body>
