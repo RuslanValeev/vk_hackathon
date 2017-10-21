@@ -48,13 +48,22 @@ def post_like(request):
 def get_matches(request):
     user_id = request.GET.get('user_id')
     client_instance = Client.objects.get(vk_id_ref=user_id)
-    matches_queryset= Match.objects.filter(
+    matches_queryset = Match.objects.filter(
         Q(client_1=client_instance) | Q(client_2=client_instance)
     )
-    response = {}
+    pre_response = {}
     for match_entity in matches_queryset:
         current_match_event_key = str(match_entity.event.afisha_event_ref)
-        response[current_match_event_key].add(match_entity.client_1.vk_id_ref)
-        response[current_match_event_key].add(match_entity.client_2.vk_id_ref)
-        response[current_match_event_key].remove(client_instance.vk_id_ref)
+        pre_response[current_match_event_key] = set()
+
+    for match_entity in matches_queryset:
+        current_match_event_key = str(match_entity.event.afisha_event_ref)
+        pre_response[current_match_event_key].add(match_entity.client_1.vk_id_ref)
+        pre_response[current_match_event_key].add(match_entity.client_2.vk_id_ref)
+        pre_response[current_match_event_key].remove(client_instance.vk_id_ref)
+
+    response = {}
+    for key, value in pre_response.items():
+        response[key] = list(value)
+
     return JsonResponse(response)
