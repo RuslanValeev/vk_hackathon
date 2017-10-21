@@ -28,6 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '31.186.100.179',
     'localhost',
+    '127.0.0.1',
+    'rvaleev.ru',
 ]
 
 XMLFILES_FOLDER = os.path.join(BASE_DIR, 'vkapp/asserts/')
@@ -96,7 +98,7 @@ DATABASES = {
         'NAME': 'django_db',
         'USER': 'base64',
         'PASSWORD': 'base64pass',
-        'HOST': '31.186.100.179',
+        'HOST': '95.213.204.48',
         'PORT': '5432',
     }
 }
