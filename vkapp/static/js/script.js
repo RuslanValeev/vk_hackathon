@@ -37,7 +37,6 @@ function renderEvent(data) {
     processedData['label'] = data['is_liked'] ? labelTemplate({icon: 'like'}) : '';
     processedData['event_id'] = data['creation_id'];
     processedData['likes'] = data['likes_counter'];
-    processedData['disabled'] = data['is_liked'] ? 'disabled' : '';
     return eventTemplate(processedData);
 }
 
@@ -196,7 +195,6 @@ function subscribeToEvent() {
             getUsers(ids.users, showModalUserCards);
         }
     });
-    $(this).addClass('disabled');
     $(this).find('.likes').text(parseInt($(this).find('.likes').text()) + 1);
     sendLike['event_id'] = $(this).data('event-id');
 }
