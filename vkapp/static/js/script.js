@@ -130,6 +130,13 @@ function renderMatch(data) {
 }
 
 function getMatches() {
+    $.ajax({
+        url: '/matching/get_matches',
+        method: 'GET',
+        data: {
+            user_id: window.user_id
+        }
+    });
     return _.clone(testUsers);
 }
 
