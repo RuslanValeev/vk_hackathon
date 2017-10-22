@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Event as ModelEvent
 from vkapp.people.models import Client
 from vkapp.matching.models import EventUser
@@ -134,4 +134,7 @@ def getEvents(request):
     return JsonResponse(events, safe=False)
 
 def app_index(request):
+    user_id = request.GET.get('viewer_id')
+    if not Client.object.get(vk_id_ref=user_id).exists():
+        return redirect('user_info')
     return(render(request, template_name='index.html', using=None))
