@@ -125,7 +125,7 @@ def getEvents(request):
             requested_event = ModelEvent.objects.get(afisha_event_ref=event.creation.creationId)
             likes = Likes()
             likes.counter = len(EventUser.objects.filter(event=requested_event))
-            likes.user_liked = True if EventUser.objects.filter(client=client_instance).exists() else False
+            likes.user_liked = True if EventUser.objects.filter(event=requested_event, client=client_instance).exists() else False
 
             event.likes = likes
             events.append(event.createEventDict())

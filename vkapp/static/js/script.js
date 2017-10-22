@@ -1,78 +1,12 @@
-var testDataJson = [
-    {
-        event_id: 1,
-        title: 'Бегущий по лезвию',
-        image_url: 'https://img06.rl0.ru/afisha/e1120x-q80i/s1.afisha.ru/MediaStorage/95/5f/40281b9513ba44d2b093993b5f95.jpg',
-        subscribers: 100,
-        wall_id: '151168842_3',
-        start_date: 1508505843751,
-        description: "Сиквел фантастического шедевра 1982 года «Бегущий по лезвию», который под отеческим присмотром Ридли Скотта и по сценарию Майкла Грина («Чужой: Завет», «Американские боги») снял отличный канадский режиссер Дени Вильнев («Убийца»», «Прибытие»). Сюжет ра..."
-    },
-    {
-        event_id: 1,
-        title: 'Второй фильм',
-        image_url: 'https://img06.rl0.ru/afisha/e1120x-q80i/s1.afisha.ru/MediaStorage/95/5f/40281b9513ba44d2b093993b5f95.jpg',
-        subscribers: 100,
-        wall_id: '151168842_3',
-        start_date: 1508505843751,
-        description: "Сиквел фантастического шедевра 1982 года «Бегущий по лезвию», который под отеческим присмотром Ридли Скотта и по сценарию Майкла Грина («Чужой: Завет», «Американские боги») снял отличный канадский режиссер Дени Вильнев («Убийца»», «Прибытие»). Сюжет ра..."
-    },
-    {
-        event_id: 1,
-        title: 'Бегущий по лезвию',
-        image_url: 'https://img06.rl0.ru/afisha/e1120x-q80i/s1.afisha.ru/MediaStorage/95/5f/40281b9513ba44d2b093993b5f95.jpg',
-        subscribers: 100,
-        wall_id: '151168842_3',
-        start_date: 1508505843751,
-        label: 'like',
-        description: "Сиквел фантастического шедевра 1982 года «Бегущий по лезвию», который под отеческим присмотром Ридли Скотта и по сценарию Майкла Грина («Чужой: Завет», «Американские боги») снял отличный канадский режиссер Дени Вильнев («Убийца»», «Прибытие»). Сюжет ра..."
-    },
-    {
-        event_id: 1,
-        title: 'Бегущий по лезвию',
-        image_url: 'https://img06.rl0.ru/afisha/e1120x-q80i/s1.afisha.ru/MediaStorage/95/5f/40281b9513ba44d2b093993b5f95.jpg',
-        subscribers: 100,
-        wall_id: '151168842_3',
-        start_date: 1508505843751,
-        label: 'fire',
-        description: "Сиквел фантастического шедевра 1982 года «Бегущий по лезвию», который под отеческим присмотром Ридли Скотта и по сценарию Майкла Грина («Чужой: Завет», «Американские боги») снял отличный канадский режиссер Дени Вильнев («Убийца»», «Прибытие»). Сюжет ра..."
-    },
-];
 var testUsers = [
     {
         avatar_url: 'https://cs5.pikabu.ru/post_img/big/2014/08/21/5/1408603111_2145351416.jpg',
         name: 'Emma'
     },
     {
-        avatar_url: 'https://chivethethrottle.files.wordpress.com/2012/05/girlllllllllls-920-20.jpg?w=920&h=940',
-        name: 'Olivia'
-    },
-    {
-        avatar_url: 'https://chivethebrigade.files.wordpress.com/2012/06/bad-idea-06_22_12-920-5.jpg',
-        name: 'Rachel Maddaw'
-    },
-    {
         avatar_url: 'https://pbs.twimg.com/profile_images/556715565398519808/22TRbE-V.jpeg',
         name: 'Charlotte Musk'
     },
-    {
-        avatar_url: 'http://desktopwallpapers.org.ua/download.php?img=201302/1024x1024/desktopwallpapers.org.ua-24821.jpg',
-        name: 'Khaleesi Gates'
-    },
-    {
-        avatar_url: 'http://www.kartinki.me/pic/201204/1024x1024/kartinki.me-3445.jpg',
-        name: 'Bathsheba Putin'
-    }
-];
-var users_info = [
-    {
-        id: 1,
-        avatar_url: "https://pp.userapi.com/c630029/v630029117/4cd13/9s7ea6GLnbs.jpg",
-        name: "Назаров Тимофей",
-        description: "Пацан с хакатона, тёлки, добавляйтесь!",
-        sex: 'male',
-        age: '21'       //ну и там сам че найдешь - присылай
-    }
 ];
 
 _.templateSettings = {
@@ -202,7 +136,7 @@ function showModalUserCards(data) {
     var users = _.reject(data.response, function (user) {
         return user.id === window.user_id
     });
-    if(!users) {
+    if(_.isEmpty(users)) {
         return;
     }
     showUserCard(users.pop());
@@ -210,7 +144,7 @@ function showModalUserCards(data) {
         onHide: function () {
             $(window).off('keydown');
             getMatches(function (data) {
-                $('#new_matches_counter').text(_.chain(data).values().flatten().uniq().value()).show();
+                $('#new_matches_counter').text(_.chain(data).values().flatten().uniq().size().value()).show();
             });
             $('#match_wrapper').find('.card').remove();
             $('#deny_button').add('#allow_button').off('click');
@@ -308,7 +242,7 @@ $(document).ready(function () {
             var users = _.reject(data.response, function (user) {
                 return user.id === window.user_id
             });
-            users.forEach(function (user) {
+            _.union(users, testUsers).forEach(function (user) {
                 $('#match_list').find('.ui.grid.centered').append(renderMatch(user));
             })
         });
