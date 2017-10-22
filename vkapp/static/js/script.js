@@ -100,7 +100,6 @@ function showUserCard(name) {
 }
 
 function sendLike(like) {
-
     $.ajax({
         url: '/matching/like',
         method: 'POST',
@@ -195,7 +194,12 @@ function subscribeToEvent() {
             getUsers(ids.users, showModalUserCards);
         }
     });
-    $(this).find('.likes').text(parseInt($(this).find('.likes').text()) + 1);
+    function updateCounter(counter) {
+        var counterTemplate = _.template($('#counter_template').html());
+        counter.replaceWith(counterTemplate(parseInt(counter.data('counter')) + 1));
+    }
+
+    updateCounter($(this).find('.likes'));
     sendLike['event_id'] = $(this).data('event-id');
 }
 

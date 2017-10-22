@@ -20,6 +20,9 @@
 </head>
 <body>
 {% verbatim %}
+<template id="counter_template">
+    <p class="likes" data-counter="{{= likes }}"><i class="icon user"></i>{{= likes }}</p>
+</template>
 <template id="event_label">
     <a class="ui red left corner label">
         <i class="{{= icon }} icon"></i>
