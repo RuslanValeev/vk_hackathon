@@ -120,6 +120,7 @@ function renderUser(data) {
     var matchTemplate = _.template($('#user_card_template').html());
     processedData['name'] = data['first_name'];
     processedData['avatar_url'] = data['photo_400_orig'];
+    processedData['user_id'] = data['id'];
     return $(matchTemplate(processedData));
 }
 
@@ -153,19 +154,36 @@ function showUserCard(name) {
     }, 15)
 }
 
-function denyUser(users) {
+function hideUser() {
     $('#match_wrapper').find('.card').addClass('denying')
         .one('transitionend webkitTransitionEnd oTransitionEnd', function () {
             $(this).remove();
         });
+}
+
+function sendLike(like) {
+
+    $.ajax({
+        url: '/matching/like',
+        method: 'POST',
+        data: {
+            user_id: window.user_id,
+            event_id: this.event_id,
+            subject_id:  $('#match_wrapper').find('.user_card').data('user_id'),
+            like: like
+        }
+    });
+}
+
+function denyUser(users) {
+    sendLike(false);
+    hideUser();
     showUserCard(users.pop());
 }
 
 function allowUser(users) {
-    $('#match_wrapper').find('.card').addClass('allowing')
-        .one('transitionend webkitTransitionEnd oTransitionEnd', function () {
-            $(this).remove();
-        });
+    sendLike(true);
+    hideUser();
     showUserCard(users.pop())
 }
 
@@ -175,7 +193,7 @@ $(document).ready(function () {
     }, function () {
         console.log('VK Init error');
     }, '5.68');
-    window.user_id = window.location.search.match(/viewer_id=(\d+)/)[1];
+    window.user_id = parseInt(window.location.search.match(/viewer_id=(\d+)/)[1]);
 
 
     var tabs = $('#menu a[data-toggle-href]');
@@ -183,7 +201,7 @@ $(document).ready(function () {
         var tab_name = $(this).attr('data-toggle-href');
         switchTab(tab_name)
     });
-    switchTab('match_list');
+    switchTab('event_list');
 
     var eventList = $('#event_list');
 
@@ -229,6 +247,7 @@ $(document).ready(function () {
                                 onHide: function () {
                                     $(window).off('keydown');
                                     var matches = getMatches();
+                                    $('#match_wrapper').find('.card').remove();
                                     $('#new_matches_counter').text(matches.length).show();
                                 },
                                 onShow: function () {
@@ -248,6 +267,8 @@ $(document).ready(function () {
                         });
                     }
                 });
+
+                sendLike['event_id'] = $(this).data('event-id');
             });
         }
     });
