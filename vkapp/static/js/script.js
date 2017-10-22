@@ -103,6 +103,7 @@ function renderEvent(data) {
     processedData['label'] = data['label'] ? labelTemplate({icon: data['label']}) : '';
     processedData['event_id'] = data['creation_id'];
     processedData['likes'] = data['likes_counter'];
+    processedData['disabled'] = data['is_liked'] ? 'disabled' : '';
     return eventTemplate(processedData);
 }
 
@@ -201,12 +202,15 @@ function showModalUserCards(data) {
     var users = _.reject(data.response, function (user) {
         return user.id === window.user_id
     });
+    if(!users) {
+        return;
+    }
     showUserCard(users.pop());
     $('#modal_user_cards').modal({
         onHide: function () {
             $(window).off('keydown');
             getMatches(function (data) {
-                $('#new_matches_counter').text(_.size(data.response)).show();
+                $('#new_matches_counter').text(_.chain(data).values().flatten().uniq().value()).show();
             });
             $('#match_wrapper').find('.card').remove();
             $('#deny_button').add('#allow_button').off('click');
@@ -259,6 +263,7 @@ function subscribeToEvent() {
         }
     });
     $(this).addClass('disabled');
+    $(this).find('.likes').text(parseInt($(this).find('.likes').text()) + 1);
     sendLike['event_id'] = $(this).data('event-id');
 }
 

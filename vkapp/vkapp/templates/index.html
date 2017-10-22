@@ -47,9 +47,10 @@
             <div class="four wide column">
                 <p><i class="icon calendar"></i>{{= date }}</p>
                 <p><i class="icon hourglass empty "></i>{{= time }}</p>
-                <button class="ui primary button icon labeled subscribe_to_event" data-event-id="{{= event_id }}">
+                <p class="likes"><i class="icon user"></i>{{= likes }}</p>
+                <button class="ui primary button icon labeled subscribe_to_event {{= disabled }}" data-event-id="{{= event_id }}">
                     <i class="heart icon"></i>
-                    Я пойду! ({{= likes }})
+                    Я пойду!
                 </button>
             </div>
         </div>
