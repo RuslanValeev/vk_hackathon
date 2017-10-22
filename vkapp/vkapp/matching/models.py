@@ -25,6 +25,12 @@ class Like(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     active_client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='%(class)s_active_client')
     passive_client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='%(class)s_passive_client')
+    mark = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = [
+            ('event', 'active_client', 'passive_client')
+        ]
 
     def __str__(self):
         return(self.event.__str__() + ' where ' + self.active_client.__str__() + ' liked ' + self.passive_client.__str__())
