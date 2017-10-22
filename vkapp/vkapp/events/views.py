@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from .models import Event as ModelEvent
+from vkapp.people.models import Client
+from vkapp.matching.models import EventUser
 # Create your views here.
 
 import xml.etree.ElementTree as ET
@@ -21,6 +23,10 @@ class Schedule:
     creationId = ""
     begin = ""
     end = ""
+
+class Likes:
+    user_liked = False
+    counter = 0
 
 class Event:
     creation = Creation()
@@ -62,6 +68,9 @@ def getEvents(request):
     events = []
     LIMIT = int(request.GET.get('limit'))
     TYPE = request.GET.get('type')
+    user_id = request.GET.get('user_id')
+    client_instance = Client.objects.get(vk_id_ref=user_id)
+
 
     schedulePath = XMLFILES_FOLDER + 'schedules_spb.xml'
     schedulesXML = ET.parse(schedulePath).getroot()
@@ -99,9 +108,8 @@ def getEvents(request):
             event = Event()
             event.schedule = schedule
             event.creation = creations[schedule.creationId]
-            events.append(event.createEventDict())
-            description_ = (event.creation.description) or (event.creation.synopsis) or (
-                event.creation.editorialComment) or ('')
+
+            description_ = (event.creation.description) or (event.creation.synopsis) or (event.creation.editorialComment) or ('')
             description_= description_[:100]
             model_event = ModelEvent.objects.get_or_create(
                 afisha_event_ref=event.creation.creationId,
@@ -111,6 +119,10 @@ def getEvents(request):
                 start_date=event.schedule.begin,
                 end_date=event.schedule.end
             )
+            likes = Likes()
+            likes.counter = len(EventUser.objects.filter(event=model_event))
+            likes.user_liked = True if EventUser.objects.filter(client=client_instance).exists() else False
+            events.append(event.createEventDict())
             if counter > LIMIT:
                 break
     return JsonResponse(events, safe=False)
