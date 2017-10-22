@@ -48,7 +48,7 @@ function switchTab(name) {
     thisTab.addClass('active');
 
     switch (name) {
-        case 'event_list':
+        case 'match_list':
             updateMatches();
             break;
     }
@@ -60,6 +60,7 @@ function switchTab(name) {
 
 function renderUser(data) {
     var userTemplate = _.template($('#user_card_template').html());
+    var processedData = {};
     processedData['name'] = data['first_name'];
     processedData['avatar_url'] = data['photo_400_orig'];
     processedData['user_id'] = data['id'];
@@ -68,6 +69,7 @@ function renderUser(data) {
 
 function renderMatch(data) {
     var matchTemplate = _.template($('#match_card_template').html());
+    var processedData = {};
     processedData['name'] = data['first_name'];
     processedData['avatar_url'] = data['photo_400_orig'];
     processedData['user_id'] = data['id'];
