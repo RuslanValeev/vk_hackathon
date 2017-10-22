@@ -154,13 +154,6 @@ function showUserCard(name) {
     }, 15)
 }
 
-function hideUser() {
-    $('#match_wrapper').find('.card').addClass('denying')
-        .one('transitionend webkitTransitionEnd oTransitionEnd', function () {
-            $(this).remove();
-        });
-}
-
 function sendLike(like) {
 
     $.ajax({
@@ -168,8 +161,8 @@ function sendLike(like) {
         method: 'POST',
         data: {
             user_id: window.user_id,
-            event_id: this.event_id,
-            subject_id:  $('#match_wrapper').find('.user_card').data('user_id'),
+            event_id: sendLike.event_id,
+            subject_id: $('#match_wrapper').find('.user_card').data('user_id'),
             like: like
         }
     });
@@ -177,14 +170,82 @@ function sendLike(like) {
 
 function denyUser(users) {
     sendLike(false);
-    hideUser();
+    $('#match_wrapper').find('.card').addClass('denying')
+        .one('transitionend webkitTransitionEnd oTransitionEnd', function () {
+            $(this).remove();
+        });
     showUserCard(users.pop());
 }
 
 function allowUser(users) {
     sendLike(true);
-    hideUser();
+    $('#match_wrapper').find('.card').addClass('allowing')
+        .one('transitionend webkitTransitionEnd oTransitionEnd', function () {
+            $(this).remove();
+        });
     showUserCard(users.pop())
+}
+
+function showModalUserCards(data) {
+    var users = _.reject(data.response, function (user) {
+        return user.id === window.user_id
+    });
+    showUserCard(users.pop());
+    $('#modal_user_cards').modal({
+        onHide: function () {
+            $(window).off('keydown');
+            var matches = getMatches();
+            $('#match_wrapper').find('.card').remove();
+            $('#new_matches_counter').text(matches.length).show();
+            $('#deny_button').add('#allow_button').off('click');
+
+        },
+        onShow: function () {
+            $(window).on('keydown', function (event) {
+                switch (event.originalEvent.key) {
+                    case 'ArrowLeft':
+                        denyUser(users);
+                        break;
+                    case 'ArrowRight':
+                        allowUser(users);
+                        break;
+                }
+                event.stopPropagation();
+            });
+
+            $("#deny_button").on('click', function () {
+                denyUser(users);
+            });
+            $('#allow_button').on('click', function () {
+                allowUser(users);
+            });
+        }
+    }).modal('show');
+}
+
+function subscribeToEvent() {
+    $.ajax({
+        url: '/matching/subscribe',
+        method: 'POST',
+        data: {
+            csrfmiddlewaretoken: CSRF_TOKEN,
+            event_id: $(this).data('event-id'),
+            user_id: window.user_id
+        }
+    });
+
+    $.ajax({
+        url: '/matching/get_subscribers',
+        method: 'GET',
+        data: {
+            event_id: $(this).data('event-id')
+        },
+        success: function (ids) {
+            getUsers(ids.users, showModalUserCards);
+        }
+    });
+    $(this).addClass('disabled');
+    sendLike['event_id'] = $(this).data('event-id');
 }
 
 $(document).ready(function () {
@@ -211,65 +272,7 @@ $(document).ready(function () {
             events.forEach(function (event, index) {
                 eventList.append(renderEvent(event));
             });
-            $('.subscribe_to_event').click(function () {
-                $.ajax({
-                    url: '/matching/subscribe',
-                    method: 'POST',
-                    data: {
-                        csrfmiddlewaretoken: CSRF_TOKEN,
-                        event_id: $(this).data('event-id'),
-                        user_id: window.user_id
-                    }
-                });
-
-                $.ajax({
-                    url: '/matching/get_subscribers',
-                    method: 'GET',
-                    data: {
-                        event_id: $(this).data('event-id')
-                    },
-                    success: function (ids) {
-                        getUsers(ids.users, function (data) {
-                            var users = _.reject(data.response, function(user){
-                                return user.id === window.user_id
-                            });
-                            $("#deny_button").click(function () {
-                                denyUser(users);
-                            });
-
-                            $('#allow_button').click(function () {
-                                allowUser(users);
-                            });
-
-                            showUserCard(users.pop());
-
-                            $('#modal_user_cards').modal({
-                                onHide: function () {
-                                    $(window).off('keydown');
-                                    var matches = getMatches();
-                                    $('#match_wrapper').find('.card').remove();
-                                    $('#new_matches_counter').text(matches.length).show();
-                                },
-                                onShow: function () {
-                                    $(window).on('keydown', function (event) {
-                                        switch (event.originalEvent.key) {
-                                            case 'ArrowLeft':
-                                                denyUser(users);
-                                                break;
-                                            case 'ArrowRight':
-                                                allowUser(users);
-                                                break;
-                                        }
-                                        event.stopPropagation();
-                                    });
-                                }
-                            }).modal('show');
-                        });
-                    }
-                });
-
-                sendLike['event_id'] = $(this).data('event-id');
-            });
+            $('.subscribe_to_event').click(subscribeToEvent);
         }
     });
 
