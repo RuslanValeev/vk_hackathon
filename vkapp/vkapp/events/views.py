@@ -44,6 +44,8 @@ class Event:
         dict["editorial_comment"] = self.creation.editorialComment
         dict["synopsis"] = self.creation.synopsis
         dict["image_url"] = self.creation.image_url
+        dict["likes_counter"] = self.likes.counter
+        dict["is_liked"] = self.likes.user_liked
         return dict
 
     def __eq__(self, other):
