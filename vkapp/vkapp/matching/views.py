@@ -52,7 +52,13 @@ def post_like(request):
     user_id = request.POST.get('user_id')
     subject_id = request.POST.get('subject_id')
     event_id = request.POST.get('event_id')
-    like = request.POST.get('like')
+    like_getter = str(request.POST.get('like')).lower()
+
+    like = False
+
+    if like_getter == "true":
+        like = True
+
     active_client_entity = Client.objects.get(vk_id_ref=user_id)
     passive_client_entity = Client.objects.get(vk_id_ref=subject_id)
     event_entity = Event.objects.get(afisha_event_ref=event_id)
