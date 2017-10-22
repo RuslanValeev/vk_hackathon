@@ -250,6 +250,8 @@ function subscribeToEvent() {
         method: 'GET',
         data: {
             event_id: $(this).data('event-id'),
+            user_id: window.user_id,
+            filter: true
         },
         success: function (ids) {
             getUsers(ids.users, showModalUserCards);
@@ -282,8 +284,7 @@ $(document).ready(function () {
         data: {
             limit: 20,
             type: 'concert',
-            user_id: window.user_id,
-            filter: true
+            user_id: window.user_id
         },
         success: function (events) {
             events.forEach(function (event, index) {
