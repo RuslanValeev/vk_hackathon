@@ -70,7 +70,7 @@ function renderMatch(data) {
     var matchTemplate = _.template($('#match_card_template').html());
     processedData['name'] = data['first_name'];
     processedData['avatar_url'] = data['photo_400_orig'];
-    // processedData['user_id'] = data['id'];
+    processedData['user_id'] = data['id'];
     return $(matchTemplate(processedData));
 }
 
@@ -141,7 +141,7 @@ function showModalUserCards(data) {
     var users = _.reject(data.response, function (user) {
         return user.id === window.user_id
     });
-    if(_.isEmpty(users)) {
+    if (_.isEmpty(users)) {
         return;
     }
     showUserCard(users.pop());
@@ -201,11 +201,13 @@ function subscribeToEvent() {
             getUsers(ids.users, showModalUserCards);
         }
     });
+
     function updateCounter(counter) {
         var counterTemplate = _.template($('#counter_template').html());
         counter.replaceWith(counterTemplate({likes: parseInt(counter.data('counter')) + 1}));
     }
-    if(!$(this).parents('.event').data('liked')) {
+
+    if (!$(this).parents('.event').data('liked')) {
         updateCounter($(this).parent().find('.likes'))
     }
     $(this).parents('.event').data('liked', true);
@@ -214,17 +216,17 @@ function subscribeToEvent() {
 }
 
 function updateMatches() {
-        getMatches(function (data) {
-            getUsers(_.flatten(_.values(data)), function (data) {
-                $('#match_list').html('');
-                var users = _.reject(data.response, function (user) {
-                    return user.id === window.user_id
-                });
-                _.union(users, testUsers).forEach(function (user) {
-                    $('#match_list').find('.ui.grid.centered').append(renderMatch(user));
-                })
+    getMatches(function (data) {
+        getUsers(_.flatten(_.values(data)), function (data) {
+            $('#match_list').html('');
+            var users = _.reject(data.response, function (user) {
+                return user.id === window.user_id
             });
+            _.union(users, testUsers).forEach(function (user) {
+                $('#match_list').find('.ui.grid.centered').append(renderMatch(user));
+            })
         });
+    });
 }
 
 $(document).ready(function () {
