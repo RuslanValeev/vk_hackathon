@@ -17,13 +17,34 @@ def post_subscribe_user_to_event(request):
 
 def get_subscribers(request):
     event_id = request.GET.get("event_id")
+    user_id = request.GET.get("user_id")
+    filter = str(request.GET.get("filter")).lower()
+
+    do_filter = False
+
+    if filter == "true":
+        do_filter = True
+
+    current_user = Client.objects.get(vk_id_ref=user_id)
+
     event_ = Event.objects.get(afisha_event_ref=event_id)
+
+    non_display_users = []
+
+    likes = Like.objects.filter(active_client=current_user, event=event_)
+
+    for like_entity in likes:
+        non_display_users.append(like_entity.passive_client.vk_id_ref)
+
     response = {}
     users = []
-    user_entities = EventUser.objects.filter(event=event_)
-    for entity in user_entities:
-        users.append(int(entity.client.vk_id_ref))
-    print(user_entities)
+    event_user_entities = EventUser.objects.filter(event=event_)
+
+    for entity in event_user_entities:
+        if entity.client.vk_id_ref in non_display_users and do_filter:
+            pass
+        else:
+            users.append(int(entity.client.vk_id_ref))
     response['users'] = users
     return JsonResponse(response)
 
