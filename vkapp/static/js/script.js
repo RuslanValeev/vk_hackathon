@@ -220,7 +220,7 @@ function subscribeToEvent() {
 function updateMatches() {
     getMatches(function (data) {
         getUsers(_.flatten(_.values(data)), function (data) {
-            $('#match_list').html('');
+            $('#match_list').find('.ui.grid.centered').html('');
             var users = _.reject(data.response, function (user) {
                 return user.id === window.user_id
             });
