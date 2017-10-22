@@ -97,6 +97,9 @@ def getEvents(request):
         creation.description = creationElement.find("description").text
         creation.editorialComment = creationElement.find("editorial-comment").text
         creation.synopsis = creationElement.find("synopsis").text
+        if not (creation.description or creation.editorialComment or creation.synopsis):
+            del creation
+            continue
         creation.image_url = creationElement.find('main-photo').text
 
         creations[creation.creationId] = creation
