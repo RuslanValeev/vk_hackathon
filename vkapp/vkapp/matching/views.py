@@ -59,7 +59,7 @@ def post_like(request):
     response = {'match_created': False}
     if active_client_entity and passive_client_entity and event_entity:
         like_entity = Like.objects.get_or_create(active_client=active_client_entity, passive_client=passive_client_entity, event=event_entity, mark=like)
-        if Like.objects.filter(active_client=passive_client_entity, passive_client=active_client_entity, event=event_entity).exists():
+        if like == True and Like.objects.filter(active_client=passive_client_entity, passive_client=active_client_entity, event=event_entity, like=True).exists():
             response['match_created'] = True
             if not Match.objects.filter(event=event_entity, client_2=active_client_entity, client_1=passive_client_entity).exists()\
                     or Match.objects.filter(event=event_entity, client_1=active_client_entity, client_2=passive_client_entity).exists():
