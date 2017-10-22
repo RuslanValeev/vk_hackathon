@@ -9,6 +9,11 @@ html {
 body {
 }
 
+#menu{
+    border-radius: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+}
 .ui.piled.segments.card {
     z-index: 1;
 }
