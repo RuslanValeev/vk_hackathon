@@ -199,7 +199,7 @@ function subscribeToEvent() {
         counter.replaceWith(counterTemplate({likes: parseInt(counter.data('counter')) + 1}));
     }
 
-    updateCounter($(this).find('.likes'));
+    updateCounter($(this).parent().find('.likes'))
     sendLike['event_id'] = $(this).data('event-id');
 }
 
