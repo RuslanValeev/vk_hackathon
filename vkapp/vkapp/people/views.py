@@ -26,6 +26,8 @@ def get_user_info(request):
     user['name'] = user_info[0]['first_name'] + " " + user_info[0]['last_name']
     user['avatar_url'] = user_info[0]['photo_200']
     response['user'] = user
+
+
     # print(vk_api.account.getProfileInfo())
 
     return(JsonResponse(response))
