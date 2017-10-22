@@ -202,6 +202,8 @@ function subscribeToEvent() {
     if(!$(this).parents('.event').data('liked')) {
         updateCounter($(this).parent().find('.likes'))
     }
+    $(this).parents('.event').data('liked', true);
+    $(this).parents('.event').find('.ui.fluid.image').append(_.template($('#event_label').html())({icon: 'like'}));
     sendLike['event_id'] = $(this).data('event-id');
 }
 
