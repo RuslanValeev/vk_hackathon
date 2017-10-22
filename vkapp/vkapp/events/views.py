@@ -120,8 +120,9 @@ def getEvents(request):
                 start_date=event.schedule.begin,
                 end_date=event.schedule.end
             )
+            requested_event = ModelEvent.objects.get(afisha_event_ref=event.creation.creationId)
             likes = Likes()
-            likes.counter = len(EventUser.objects.filter(event=model_event))
+            likes.counter = len(EventUser.objects.filter(event=requested_event))
             likes.user_liked = True if EventUser.objects.filter(client=client_instance).exists() else False
 
             event.likes = likes
