@@ -47,6 +47,12 @@ function switchTab(name) {
     tabs.not(thisTab).removeClass('active');
     thisTab.addClass('active');
 
+    switch (name) {
+        case 'event_list':
+            updateMatches();
+            break;
+    }
+
     var tab = $('#' + name);
     $('.toggled-tab').not(tab).hide();
     tab.show();
@@ -207,6 +213,20 @@ function subscribeToEvent() {
     sendLike['event_id'] = $(this).data('event-id');
 }
 
+function updateMatches() {
+        getMatches(function (data) {
+            getUsers(_.flatten(_.values(data)), function (data) {
+                $('#match_list').html('');
+                var users = _.reject(data.response, function (user) {
+                    return user.id === window.user_id
+                });
+                _.union(users, testUsers).forEach(function (user) {
+                    $('#match_list').find('.ui.grid.centered').append(renderMatch(user));
+                })
+            });
+        });
+}
+
 $(document).ready(function () {
     VK.init(function () {
         console.log('VK init success');
@@ -238,20 +258,6 @@ $(document).ready(function () {
             });
             $('.subscribe_to_event').click(subscribeToEvent);
         }
-    });
-
-    getMatches(function (data) {
-        //     data.response.forEach(function (user) {
-        //     $('#match_list').find('.ui.grid.centered').append(renderMatch(user));
-        // });
-        getUsers(_.flatten(_.values(data)), function (data) {
-            var users = _.reject(data.response, function (user) {
-                return user.id === window.user_id
-            });
-            _.union(users, testUsers).forEach(function (user) {
-                $('#match_list').find('.ui.grid.centered').append(renderMatch(user));
-            })
-        });
     });
 
 });
