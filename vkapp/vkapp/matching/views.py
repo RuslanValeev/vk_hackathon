@@ -18,11 +18,11 @@ def post_subscribe_user_to_event(request):
 def get_subscribers(request):
     event_id = request.GET.get("event_id")
     user_id = request.GET.get("user_id")
-    filter = request.GET.get("filter")
+    filter = str(request.GET.get("filter")).lower()
 
     do_filter = False
 
-    if filter == "True":
+    if filter == "true":
         do_filter = True
 
     current_user = Client.objects.get(vk_id_ref=user_id)
