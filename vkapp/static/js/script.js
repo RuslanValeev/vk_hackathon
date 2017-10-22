@@ -1,10 +1,10 @@
 var testUsers = [
     {
-        avatar_url: 'https://cs5.pikabu.ru/post_img/big/2014/08/21/5/1408603111_2145351416.jpg',
+        photo_400_orig: 'https://cs5.pikabu.ru/post_img/big/2014/08/21/5/1408603111_2145351416.jpg',
         name: 'Emma'
     },
     {
-        avatar_url: 'https://pbs.twimg.com/profile_images/556715565398519808/22TRbE-V.jpeg',
+        photo_400_orig: 'https://pbs.twimg.com/profile_images/556715565398519808/22TRbE-V.jpeg',
         name: 'Charlotte Musk'
     },
 ];
@@ -34,10 +34,9 @@ function renderEvent(data) {
     processedData['time'] = dateTime.toLocaleString("ru", timeOptions);
     processedData['date'] = dateTime.toLocaleString("ru", dateOptions);
     processedData['description'] = (data['description'] || data['editorial_comment'] || data['synopsis'] || '').slice(0, 80);
-    processedData['label'] = data['label'] ? labelTemplate({icon: data['label']}) : '';
+    processedData['label'] = data['is_liked'] ? labelTemplate({icon: 'like'}) : '';
     processedData['event_id'] = data['creation_id'];
     processedData['likes'] = data['likes_counter'];
-    processedData['disabled'] = data['is_liked'] ? 'disabled' : '';
     return eventTemplate(processedData);
 }
 
@@ -101,7 +100,6 @@ function showUserCard(name) {
 }
 
 function sendLike(like) {
-
     $.ajax({
         url: '/matching/like',
         method: 'POST',
@@ -144,7 +142,7 @@ function showModalUserCards(data) {
         onHide: function () {
             $(window).off('keydown');
             getMatches(function (data) {
-                $('#new_matches_counter').text(_.chain(data).values().flatten().uniq().size().value()).show();
+                $('#new_matches_counter').text(_.chain(data).values().flatten().uniq().size().value() + 2).show();
             });
             $('#match_wrapper').find('.card').remove();
             $('#deny_button').add('#allow_button').off('click');
@@ -196,8 +194,12 @@ function subscribeToEvent() {
             getUsers(ids.users, showModalUserCards);
         }
     });
-    $(this).addClass('disabled');
-    $(this).find('.likes').text(parseInt($(this).find('.likes').text()) + 1);
+    function updateCounter(counter) {
+        var counterTemplate = _.template($('#counter_template').html());
+        counter.replaceWith(counterTemplate(parseInt(counter.data('counter')) + 1));
+    }
+
+    updateCounter($(this).find('.likes'));
     sendLike['event_id'] = $(this).data('event-id');
 }
 

@@ -52,14 +52,17 @@ def post_like(request):
     user_id = request.POST.get('user_id')
     subject_id = request.POST.get('subject_id')
     event_id = request.POST.get('event_id')
-    like = request.POST.get('like')
+    like = request.POST.get('like').lower() == 'true'
+
     active_client_entity = Client.objects.get(vk_id_ref=user_id)
     passive_client_entity = Client.objects.get(vk_id_ref=subject_id)
     event_entity = Event.objects.get(afisha_event_ref=event_id)
     response = {'match_created': False}
+
     if active_client_entity and passive_client_entity and event_entity:
         like_entity = Like.objects.get_or_create(active_client=active_client_entity, passive_client=passive_client_entity, event=event_entity, mark=like)
-        if Like.objects.filter(active_client=passive_client_entity, passive_client=active_client_entity, event=event_entity).exists():
+
+        if like and Like.objects.filter(active_client=passive_client_entity, passive_client=active_client_entity, event=event_entity, mark=True).exists():
             response['match_created'] = True
             if not Match.objects.filter(event=event_entity, client_2=active_client_entity, client_1=passive_client_entity).exists()\
                     or Match.objects.filter(event=event_entity, client_1=active_client_entity, client_2=passive_client_entity).exists():
