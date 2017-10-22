@@ -8,7 +8,7 @@ import vk
 
 import xml.etree.ElementTree as ET
 from django.http import JsonResponse
-from vkapp.settings import XMLFILES_FOLDER
+from vkapp.settings import XMLFILES_FOLDER, VK_ACCESS_TOKEN
 import json
 import re
 
