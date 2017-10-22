@@ -196,7 +196,7 @@ function subscribeToEvent() {
     });
     function updateCounter(counter) {
         var counterTemplate = _.template($('#counter_template').html());
-        counter.replaceWith(counterTemplate(parseInt(counter.data('counter')) + 1));
+        counter.replaceWith(counterTemplate({likes: parseInt(counter.data('counter')) + 1}));
     }
 
     updateCounter($(this).find('.likes'));
