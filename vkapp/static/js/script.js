@@ -102,6 +102,8 @@ function renderEvent(data) {
     processedData['description'] = (data['description'] || data['editorial_comment'] || data['synopsis'] || '').slice(0, 80);
     processedData['label'] = data['label'] ? labelTemplate({icon: data['label']}) : '';
     processedData['event_id'] = data['creation_id'];
+    processedData['likes'] = data['likes_counter'];
+    processedData['disabled'] = data['is_liked'] ? 'disabled' : '';
     return eventTemplate(processedData);
 }
 
@@ -117,16 +119,19 @@ function switchTab(name) {
 }
 
 function renderUser(data) {
-    var matchTemplate = _.template($('#user_card_template').html());
+    var userTemplate = _.template($('#user_card_template').html());
     processedData['name'] = data['first_name'];
     processedData['avatar_url'] = data['photo_400_orig'];
     processedData['user_id'] = data['id'];
-    return $(matchTemplate(processedData));
+    return $(userTemplate(processedData));
 }
 
 function renderMatch(data) {
     var matchTemplate = _.template($('#match_card_template').html());
-    return $(matchTemplate(data));
+    processedData['name'] = data['first_name'];
+    processedData['avatar_url'] = data['photo_400_orig'];
+    // processedData['user_id'] = data['id'];
+    return $(matchTemplate(processedData));
 }
 
 function getMatches(callback) {
@@ -197,12 +202,15 @@ function showModalUserCards(data) {
     var users = _.reject(data.response, function (user) {
         return user.id === window.user_id
     });
+    if(!users) {
+        return;
+    }
     showUserCard(users.pop());
     $('#modal_user_cards').modal({
         onHide: function () {
             $(window).off('keydown');
             getMatches(function (data) {
-                $('#new_matches_counter').text(_.size(data.response)).show();
+                $('#new_matches_counter').text(_.chain(data).values().flatten().uniq().value()).show();
             });
             $('#match_wrapper').find('.card').remove();
             $('#deny_button').add('#allow_button').off('click');
@@ -255,6 +263,7 @@ function subscribeToEvent() {
         }
     });
     $(this).addClass('disabled');
+    $(this).find('.likes').text(parseInt($(this).find('.likes').text()) + 1);
     sendLike['event_id'] = $(this).data('event-id');
 }
 
@@ -277,7 +286,12 @@ $(document).ready(function () {
     var eventList = $('#event_list');
 
     $.ajax({
-        url: '/get_events?limit=20&type=concert&user_id=' + window.user_id,
+        url: '/get_events',
+        data: {
+            limit: 20,
+            type: 'concert',
+            user_id: window.user_id
+        },
         success: function (events) {
             events.forEach(function (event, index) {
                 eventList.append(renderEvent(event));
