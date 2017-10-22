@@ -1,12 +1,14 @@
 var testUsers = [
     {
         photo_400_orig: 'https://cs5.pikabu.ru/post_img/big/2014/08/21/5/1408603111_2145351416.jpg',
-        name: 'Emma'
+        first_name: 'Emma',
+        id: 2324
     },
     {
         photo_400_orig: 'https://pbs.twimg.com/profile_images/556715565398519808/22TRbE-V.jpeg',
-        name: 'Charlotte Musk'
-    },
+        first_name: 'Charlotte Musk',
+        id: 4747
+    }
 ];
 
 _.templateSettings = {
