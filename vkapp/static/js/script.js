@@ -102,6 +102,7 @@ function renderEvent(data) {
     processedData['description'] = (data['description'] || data['editorial_comment'] || data['synopsis'] || '').slice(0, 80);
     processedData['label'] = data['label'] ? labelTemplate({icon: data['label']}) : '';
     processedData['event_id'] = data['creation_id'];
+    processedData['likes'] = data['likes_counter'];
     return eventTemplate(processedData);
 }
 
@@ -129,7 +130,7 @@ function renderMatch(data) {
     processedData['name'] = data['first_name'];
     processedData['avatar_url'] = data['photo_400_orig'];
     // processedData['user_id'] = data['id'];
-    return $(matchTemplate(data));
+    return $(matchTemplate(processedData));
 }
 
 function getMatches(callback) {
