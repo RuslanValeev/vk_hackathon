@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from .models import Event as ModelEvent
 from vkapp.people.models import Client
 from vkapp.matching.models import EventUser
+import vk
+
 # Create your views here.
 
 import xml.etree.ElementTree as ET
@@ -135,6 +137,23 @@ def getEvents(request):
 
 def app_index(request):
     user_id = request.GET.get('viewer_id')
+
     if not Client.objects.filter(vk_id_ref=user_id).exists():
-        return redirect(to='people/user', request=request)
+        session = vk.Session(access_token=VK_ACCESS_TOKEN)
+        vk_api = vk.API(session)
+        user = {}
+        user['id'] = user_id
+        user_info = vk_api.users.get(user_id=user['id'],
+                                     fields='last_seen, first_name, last_name, country, city, photo_200')
+        user['city'] = user_info[0]['city']
+        user['name'] = user_info[0]['first_name'] + " " + user_info[0]['last_name']
+        user['avatar_url'] = user_info[0]['photo_200']
+
+        Client.objects.create(
+            vk_id_ref=user['id'],
+            name=user['name'],
+            money=0,
+            description='',
+            avatar_url=user['avatar_url']
+        )
     return(render(request, template_name='index.html', using=None))
