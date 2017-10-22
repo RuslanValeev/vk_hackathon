@@ -117,15 +117,18 @@ function switchTab(name) {
 }
 
 function renderUser(data) {
-    var matchTemplate = _.template($('#user_card_template').html());
+    var userTemplate = _.template($('#user_card_template').html());
     processedData['name'] = data['first_name'];
     processedData['avatar_url'] = data['photo_400_orig'];
     processedData['user_id'] = data['id'];
-    return $(matchTemplate(processedData));
+    return $(userTemplate(processedData));
 }
 
 function renderMatch(data) {
     var matchTemplate = _.template($('#match_card_template').html());
+    processedData['name'] = data['first_name'];
+    processedData['avatar_url'] = data['photo_400_orig'];
+    // processedData['user_id'] = data['id'];
     return $(matchTemplate(data));
 }
 
@@ -247,8 +250,6 @@ function subscribeToEvent() {
         method: 'GET',
         data: {
             event_id: $(this).data('event-id'),
-            user_id: window.user_id,
-            filter: true
         },
         success: function (ids) {
             getUsers(ids.users, showModalUserCards);
@@ -277,7 +278,13 @@ $(document).ready(function () {
     var eventList = $('#event_list');
 
     $.ajax({
-        url: '/get_events?limit=20&type=concert&user_id=' + window.user_id,
+        url: '/get_events',
+        data: {
+            limit: 20,
+            type: 'concert',
+            user_id: window.user_id,
+            filter: true
+        },
         success: function (events) {
             events.forEach(function (event, index) {
                 eventList.append(renderEvent(event));
