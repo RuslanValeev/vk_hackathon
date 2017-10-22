@@ -33,4 +33,9 @@ class Like(models.Model):
         ]
 
     def __str__(self):
-        return(self.event.__str__() + ' where ' + self.active_client.__str__() + ' liked ' + self.passive_client.__str__())
+        if self.mark:
+            add = 'like'
+        else:
+            add = 'dislike'
+
+        return(self.event.__str__() + ' where ' + self.active_client.__str__() + ' ' + add + 'd '+ self.passive_client.__str__())
