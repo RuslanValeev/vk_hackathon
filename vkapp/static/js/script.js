@@ -129,15 +129,15 @@ function renderMatch(data) {
     return $(matchTemplate(data));
 }
 
-function getMatches() {
+function getMatches(callback) {
     $.ajax({
         url: '/matching/get_matches',
         method: 'GET',
         data: {
             user_id: window.user_id
-        }
+        },
+        success: callback
     });
-    return _.clone(testUsers);
 }
 
 function getUsers(ids, callback) {
@@ -169,7 +169,7 @@ function sendLike(like) {
         data: {
             user_id: window.user_id,
             event_id: sendLike.event_id,
-            subject_id: $('#match_wrapper').find('.user_card').data('user_id'),
+            subject_id: $('#match_wrapper').find('.user_card').data('user-id'),
             like: like
         }
     });
@@ -201,9 +201,10 @@ function showModalUserCards(data) {
     $('#modal_user_cards').modal({
         onHide: function () {
             $(window).off('keydown');
-            var matches = getMatches();
+            getMatches(function (data) {
+                $('#new_matches_counter').text(data.response.length).show();
+            });
             $('#match_wrapper').find('.card').remove();
-            $('#new_matches_counter').text(matches.length).show();
             $('#deny_button').add('#allow_button').off('click');
 
         },
@@ -283,8 +284,10 @@ $(document).ready(function () {
         }
     });
 
-    getMatches().forEach(function (user) {
+    getMatches(function (data) {
+        data.response.forEach(function (user) {
         $('#match_list').find('.ui.grid.centered').append(renderMatch(user));
     });
+    })
 
 });
