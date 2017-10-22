@@ -34,7 +34,7 @@ function renderEvent(data) {
     processedData['time'] = dateTime.toLocaleString("ru", timeOptions);
     processedData['date'] = dateTime.toLocaleString("ru", dateOptions);
     processedData['description'] = (data['description'] || data['editorial_comment'] || data['synopsis'] || '').slice(0, 80);
-    processedData['label'] = data['label'] ? labelTemplate({icon: data['label']}) : '';
+    processedData['label'] = data['is_liked'] ? labelTemplate({icon: 'like'}) : '';
     processedData['event_id'] = data['creation_id'];
     processedData['likes'] = data['likes_counter'];
     processedData['disabled'] = data['is_liked'] ? 'disabled' : '';
