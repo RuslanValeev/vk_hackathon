@@ -267,7 +267,7 @@ $(document).ready(function () {
     var eventList = $('#event_list');
 
     $.ajax({
-        url: '/get_events?limit=20&type=concert',
+        url: '/get_events?limit=20&type=concert&user_id=' + window.user_id,
         success: function (events) {
             events.forEach(function (event, index) {
                 eventList.append(renderEvent(event));
