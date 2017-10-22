@@ -18,7 +18,7 @@ def get_user_info(request):
     response['api_settings'] = request_params.get('api_settings')
 
     user = {}
-    user['id'] = int(request_params.get('viewer_id'))
+    user['id'] = request_params.get('viewer_id')
     user['is_app_user'] = request_params.get('is_app_user')
     user_info = vk_api.users.get(user_id=user['id'], fields='last_seen, first_name, last_name, country, city, photo_200')
     # account_info = vk_api.
