@@ -1,10 +1,10 @@
 var testUsers = [
     {
-        avatar_url: 'https://cs5.pikabu.ru/post_img/big/2014/08/21/5/1408603111_2145351416.jpg',
+        photo_400_orig: 'https://cs5.pikabu.ru/post_img/big/2014/08/21/5/1408603111_2145351416.jpg',
         name: 'Emma'
     },
     {
-        avatar_url: 'https://pbs.twimg.com/profile_images/556715565398519808/22TRbE-V.jpeg',
+        photo_400_orig: 'https://pbs.twimg.com/profile_images/556715565398519808/22TRbE-V.jpeg',
         name: 'Charlotte Musk'
     },
 ];
@@ -144,7 +144,7 @@ function showModalUserCards(data) {
         onHide: function () {
             $(window).off('keydown');
             getMatches(function (data) {
-                $('#new_matches_counter').text(_.chain(data).values().flatten().uniq().size().value()).show();
+                $('#new_matches_counter').text(_.chain(data).values().flatten().uniq().size().value() + 2).show();
             });
             $('#match_wrapper').find('.card').remove();
             $('#deny_button').add('#allow_button').off('click');
