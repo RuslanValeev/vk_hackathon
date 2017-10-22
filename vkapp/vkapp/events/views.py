@@ -136,5 +136,5 @@ def getEvents(request):
 def app_index(request):
     user_id = request.GET.get('viewer_id')
     if not Client.objects.filter(vk_id_ref=user_id).exists():
-        return redirect(to='people/user', request=request)
+        return redirect(to='people/user', viewer_id=user_id)
     return(render(request, template_name='index.html', using=None))
