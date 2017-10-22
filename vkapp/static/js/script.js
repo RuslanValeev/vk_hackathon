@@ -154,13 +154,6 @@ function showUserCard(name) {
     }, 15)
 }
 
-function hideUser() {
-    $('#match_wrapper').find('.card').addClass('denying')
-        .one('transitionend webkitTransitionEnd oTransitionEnd', function () {
-            $(this).remove();
-        });
-}
-
 function sendLike(like) {
 
     $.ajax({
@@ -168,7 +161,7 @@ function sendLike(like) {
         method: 'POST',
         data: {
             user_id: window.user_id,
-            event_id: this.event_id,
+            event_id: sendLike.event_id,
             subject_id: $('#match_wrapper').find('.user_card').data('user_id'),
             like: like
         }
@@ -177,13 +170,19 @@ function sendLike(like) {
 
 function denyUser(users) {
     sendLike(false);
-    hideUser();
+    $('#match_wrapper').find('.card').addClass('denying')
+        .one('transitionend webkitTransitionEnd oTransitionEnd', function () {
+            $(this).remove();
+        });
     showUserCard(users.pop());
 }
 
 function allowUser(users) {
     sendLike(true);
-    hideUser();
+    $('#match_wrapper').find('.card').addClass('allowing')
+        .one('transitionend webkitTransitionEnd oTransitionEnd', function () {
+            $(this).remove();
+        });
     showUserCard(users.pop())
 }
 
@@ -245,7 +244,7 @@ function subscribeToEvent() {
             getUsers(ids.users, showModalUserCards);
         }
     });
-
+    $(this).addClass('disabled');
     sendLike['event_id'] = $(this).data('event-id');
 }
 
