@@ -37,6 +37,7 @@ function renderEvent(data) {
     processedData['label'] = data['is_liked'] ? labelTemplate({icon: 'like'}) : '';
     processedData['event_id'] = data['creation_id'];
     processedData['likes'] = data['likes_counter'];
+    processedData['liked'] = data['is_liked'] ? 'true' : 'false';
     return eventTemplate(processedData);
 }
 
@@ -198,8 +199,9 @@ function subscribeToEvent() {
         var counterTemplate = _.template($('#counter_template').html());
         counter.replaceWith(counterTemplate({likes: parseInt(counter.data('counter')) + 1}));
     }
-
-    updateCounter($(this).parent().find('.likes'))
+    if($(this).parents('.event').data('liked') !== 'true') {
+        updateCounter($(this).parent().find('.likes'))
+    }
     sendLike['event_id'] = $(this).data('event-id');
 }
 
